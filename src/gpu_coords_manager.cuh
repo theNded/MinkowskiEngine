@@ -23,4 +23,4 @@
  * of the code.
  */
 
-#include "coords_hashmap_gpu/coordinate_indexer.cuh"
+#include "gpu_coords_hashmap/coordinate_indexer.cuh"
