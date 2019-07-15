@@ -18,8 +18,8 @@
 
 #pragma once
 
-#include "../gpu_memory_manager.hpp"
 #include "coordinate_hash_map.h"
+#include "memory_alloc/memory_pool.h"
 
 /** Mapping coordinates to indices, wrapped for MinkowskiEngine **/
 template <size_t D> class CoordinateIndexer {
@@ -44,6 +44,6 @@ public:
   float ComputeLoadFactor(int flag = 0);
 
 private:
-  GPUMemoryManager<int8_t> index_memory_pool_;
+  GPUMemoryPool index_memory_pool_;
   std::shared_ptr<CoordinateHashMap<KeyT, D, ValueT, HashFunc>> hash_map_;
 };

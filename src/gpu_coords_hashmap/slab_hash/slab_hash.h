@@ -19,7 +19,6 @@
 #include <cassert>
 #include <memory>
 
-#include "../../gpu_memory_manager.hpp"
 #include "../memory_alloc/memory_alloc.h"
 #include "../memory_alloc/slab_list_alloc.h"
 #include "coordinate.h"
@@ -98,7 +97,7 @@ private:
 
   // a raw pointer to the initial allocated memory for all buckets
   int8_t *d_table_;
-  GPUMemoryManager<int8_t> table_memory_pool_;
+  GPUMemoryPool table_memory_pool_;
 
   SlabHashContext<KeyT, D, ValueT, HashFunc> gpu_context_;
   std::shared_ptr<MemoryAlloc<KeyTD>> key_allocator_;

@@ -42,7 +42,7 @@ ifneq ($(CPU_ONLY), 1)
 	# CUDA ROOT DIR that contains bin/ lib64/ and include/
 	# CUDA_DIR := /usr/local/cuda
 	CUDA_DIR := $(shell python -c 'from torch.utils.cpp_extension import _find_cuda_home; print(_find_cuda_home())')
-	
+
 	INCLUDE_DIRS += ./ $(CUDA_DIR)/include
 	LIBRARY_DIRS += $(CUDA_DIR)/lib64
 endif
@@ -54,6 +54,8 @@ CU_SRCS := $(wildcard $(SRC_DIR)/*.cu)
 OBJS := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(CPP_SRCS))
 CU_OBJS := $(patsubst $(SRC_DIR)/%.cu,$(OBJ_DIR)/cuda/%.o,$(CU_SRCS))
 STATIC_LIB := $(OBJ_DIR)/lib$(EXTENSION_NAME).a
+TEST_DIR := ./tests
+CUDA_TESTS := $(wildcard $(TEST_DIR)/cuda/*.cu)
 
 # We will also explicitly add stdc++ to the link target.
 LIBRARIES := stdc++ c10 caffe2 torch torch_python
@@ -146,6 +148,17 @@ $(STATIC_LIB): $(ALL_OBJS) | $(OBJ_DIR)
 	$(RM) -f $(STATIC_LIB)
 	@ echo LD -o $@
 	ar rc $(STATIC_LIB) $(ALL_OBJS)
+
+test:
+	@ echo "testing"
+	@ echo $(CUDA_TESTS)
+	@ echo $(STATIC_LIB)
+	@ echo ${LDFLAGS}
+	@ echo ${LINKFLAGS}
+	@ echo "${NVCCFLAGS} ${CUDA_ARCH} -o test -L${STATIC_LIB} ${CUDA_TESTS}"
+#	@ export LD_LIBRARY_PATH = $LD_LIBRARY_PATH:/home/dongw1/miniconda3/envs/py3-mink/lib/python3.7/site-packages/torch/lib
+	$(Q)nvcc $(NVCCFLAGS) $(CUDA_ARCH) ${LDFLAGS} -L{STATIC_LIB} -o test $(CUDA_TESTS)
+
 
 clean:
 	@- $(RM) -rf $(OBJ_DIR) build dist

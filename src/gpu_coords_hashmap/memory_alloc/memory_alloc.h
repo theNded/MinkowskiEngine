@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "memory_pool.h"
 #include <memory>
 #include <vector>
 
@@ -14,7 +15,6 @@
  * Basically, we maintain one memory heap per data type.
  */
 
-#include "../../gpu_memory_manager.hpp"
 #include "config.h"
 #include <assert.h>
 
@@ -50,8 +50,8 @@ public:
   int max_capacity_;
   MemoryAllocContext<T> gpu_context_;
 
-  GPUMemoryManager<int8_t> data_memory_pool_;
-  GPUMemoryManager<int8_t> heap_memory_pool_;
+  GPUMemoryPool data_memory_pool_;
+  GPUMemoryPool heap_memory_pool_;
 
 public:
   MemoryAlloc(int max_capacity);

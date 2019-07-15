@@ -16,9 +16,9 @@
 
 #pragma once
 
-#include "../../gpu_memory_manager.hpp"
 #include "../helper_cuda.h"
 #include "config.h"
+#include "memory_pool.h"
 #include <iostream>
 #include <random>
 #include <stdint.h>
@@ -135,7 +135,7 @@ private:
 class SlabAlloc {
 private:
   // a pointer to each super-block
-  GPUMemoryManager<int8_t> super_blocks_memory_pool_;
+  GPUMemoryPool super_blocks_memory_pool_;
   uint32_t *d_super_blocks_;
 
   // hash_coef (register): used as (16 bits, 16 bits) for hashing

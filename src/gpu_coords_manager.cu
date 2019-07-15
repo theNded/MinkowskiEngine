@@ -24,6 +24,7 @@
  */
 
 #include "gpu_coords_manager.cuh"
+
 template class CoordinateIndexer<1>;
 template class CoordinateIndexer<2>;
 template class CoordinateIndexer<3>;
