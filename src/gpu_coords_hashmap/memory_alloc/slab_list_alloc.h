@@ -135,7 +135,7 @@ private:
 class SlabAlloc {
 private:
   // a pointer to each super-block
-  GPUMemoryManager<int> super_blocks_memory_pool_;
+  GPUMemoryManager<int8_t> super_blocks_memory_pool_;
   uint32_t *d_super_blocks_;
 
   // hash_coef (register): used as (16 bits, 16 bits) for hashing
