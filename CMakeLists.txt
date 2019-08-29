@@ -1,5 +1,11 @@
-cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
-project (minkowski)
+cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
+project(minkowski VERSION 0.2.6)
+
+# c++11
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# fPIC
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # TODO: check if it is the correct way in a conda env
 # any workaround to enable cuda_add_library()?
@@ -32,7 +38,10 @@ include_directories(${INCLUDE_DIRS})
 
 # collect source files
 file(GLOB_RECURSE ALL_CPP_SOURCE_FILES "src/*.cpp")
+file(GLOB_RECURSE ALL_CPP_HEADER_FILES "src/*.hpp")
+
 file(GLOB_RECURSE ALL_CUDA_SOURCE_FILES "src/*.cu")
+file(GLOB_RECURSE ALL_CUDA_HEADER_FILES "src/*.cuh")
 
 # flags for cuda code generation
 set(CUDA_NVCC_FLAGS
@@ -47,6 +56,14 @@ set(CUDA_NVCC_FLAGS
 
 # build
 # TODO: correctly link libraries
-add_library(${PROJECT_NAME} STATIC ${ALL_CPP_SOURCE_FILES})
-cuda_add_library(MinkCuda STATIC ${ALL_CUDA_SOURCE_FILES})
+add_library(${PROJECT_NAME} STATIC ${ALL_CPP_SOURCE_FILES} ${ALL_CPP_HEADER_FILES})
+cuda_add_library(MinkCuda STATIC ${ALL_CUDA_SOURCE_FILES} ${ALL_CUDA_HEADER_FILES})
 target_link_libraries(${PROJECT_NAME} MinkCuda)
+
+add_custom_target(install-pip
+  COMMAND ${CMAKE_COMMAND}
+  -DPYTHON_SCRIPT_DIR=${PROJECT_SOURCE_DIR}/cmake/setup.py
+  -DPACKAGE_VERSION=${PROJECT_VERSION}
+  -DPROJECT_DIR=${PROJECT_SOURCE_DIR}
+  -P ${PROJECT_SOURCE_DIR}/cmake/install.cmake
+  DEPENDS ${PROJECT_NAME})
